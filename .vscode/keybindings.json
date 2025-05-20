@@ -1,0 +1,7 @@
+[
+  {
+    "key": "cmd+shift+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "verusfmt"
+  }
+]
