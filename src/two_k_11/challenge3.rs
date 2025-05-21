@@ -45,7 +45,7 @@ proof fn occurrences_concat_transitive(x: i32, s: Seq<i32>, y: i32)
         } else {
             0
         }) + occurrences(s, y)) by {
-            // [x, <CONCAT S>].drop_first() == [<CONCAT S>] ==
+            // [x, <CONCAT S>].drop_first() == [<CONCAT S>] == s
             assert((Seq::empty().push(x) + s).drop_first() == s);
         };
     }
