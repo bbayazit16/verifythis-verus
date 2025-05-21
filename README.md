@@ -1,3 +1,3 @@
 ## VerifyThis-Verus
 
-[More info on challenges](https://verifythis.github.io/onsite/archive/)
+[More info on the challenges](https://verifythis.github.io/onsite/archive/)
