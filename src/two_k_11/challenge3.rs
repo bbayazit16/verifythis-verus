@@ -23,6 +23,34 @@ proof fn lemma_transitive_contains(s: Seq<i32>, x: i32)
     assert(s.drop_first()[index - 1] == x);
 }
 
+proof fn occurrences_concat_transitive(x: i32, s: Seq<i32>, y: i32)
+    ensures
+        occurrences(Seq::empty().push(x) + s, y) == (if x == y {
+            1nat
+        } else {
+            0
+        }) + occurrences(s, y),
+    decreases s,
+{
+    // By induction on s
+    if s.len() == 0 {
+        reveal_with_fuel(occurrences, 2);
+    } else {
+        // I.H.
+        // Works for n - 1, prove for n;
+        occurrences_concat_transitive(x, s.drop_first(), y);
+
+        assert(occurrences(Seq::empty().push(x) + s, y) == (if x == y {
+            1nat
+        } else {
+            0
+        }) + occurrences(s, y)) by {
+            // [x, <CONCAT S>].drop_first() == [<CONCAT S>] ==
+            assert((Seq::empty().push(x) + s).drop_first() == s);
+        };
+    }
+}
+
 // From Dafny solution, with added by compute proof.
 // Take a sequence `s` and two values `x`, `y`. The occurences of `y` in s must
 // be greater than or equal to s with x removed. Because, x could be equal equal to y, or not.
@@ -33,18 +61,32 @@ proof fn occurrences_remove(s: Seq<i32>, x: i32, y: i32)
     decreases s,
 {
     // By induction on s
-    if s.len() != 0 {
+    if s.len() == 0 {
+        // Base case
+    } else {
+        // I.H.
         occurrences_remove(s.drop_first(), x, y);
-    }
-    assert(occurrences(s, y) >= occurrences(remove_spec(s, x), y))
-        by (compute)
-    // Here ^^, by (compute) proves the lemma
-    // assert(occurrences(Seq::empty().push(x) + s, y) == (if x == y {
-    //     1nat
-    // } else {
-    //     0
-    // }) + occurrences(s, y)) by (compute);
 
+        if s.first() == x {
+            // Removed directly
+        } else {
+            let first_is_y: nat = if s.first() == y {
+                1
+            } else {
+                0
+            };
+
+            assert(occurrences(remove_spec(s, x), y) == first_is_y + occurrences(
+                remove_spec(s.drop_first(), x),
+                y,
+            )) by {
+                let first_removed = remove_spec(s.drop_first(), x);
+                assert(remove_spec(s, x) == Seq::empty().push(s.first()) + first_removed);
+
+                occurrences_concat_transitive(s.first(), first_removed, y);
+            };
+        }
+    }
 }
 
 proof fn lemma_drop_first_concat(p: Seq<i32>, q: Seq<i32>)
@@ -309,7 +351,7 @@ exec fn first_duplicate(s: Vec<i32>) -> (result: i32)
     }
 }
 
-// Main challenge3
+// Main challenge 3
 #[allow(unused)]
 fn find_two_duplicates(a: &Vec<i32>) -> (results: (i32, i32))
     requires
