@@ -14,5 +14,28 @@
     "**/.hg": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "verifast-ghost-range",
+        "settings": {
+          "foreground": "#CC6600"
+        }
+      },
+      {
+        "scope": "verifast-ghost-keyword",
+        "settings": {
+          "fontStyle": "bold",
+          "foreground": "#DB9900"
+        }
+      },
+      {
+        "scope": "verifast-ghost-range-delimiter",
+        "settings": {
+          "foreground": "#808080"
+        }
+      }
+    ]
   }
 }
