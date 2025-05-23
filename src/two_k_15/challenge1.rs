@@ -16,9 +16,6 @@ spec fn spec_is_relaxed_prefix(pat: Seq<i32>, a: Seq<i32>) -> bool {
 
 #[allow(unused)]
 exec fn is_relaxed_prefix(pat: &Vec<i32>, a: &Vec<i32>) -> (res: bool)
-    requires
-        pat.len() <= usize::MAX,
-        0 < a.len() <= usize::MAX,
     ensures
         res == spec_is_relaxed_prefix(pat@, a@),
 {
