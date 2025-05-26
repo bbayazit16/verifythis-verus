@@ -2,21 +2,22 @@ use vstd::prelude::*;
 
 verus! {
 
-struct Dll {
-    prev: Vec<i32>,
-    next: Vec<i32>,
+pub struct Dll {
+    pub prev: Vec<i32>,
+    pub next: Vec<i32>,
     #[allow(unused)]
-    ghost n: int,
+    pub ghost n: int,
 }
 
 impl Dll {
-    #[verifier::type_invariant]
-    spec fn well_formed(&self) -> bool {
+    // TODO: annotate with #[verifier::type_invariant]
+    pub open spec fn well_formed(&self) -> bool {
         self.prev.len() == self.next.len() == self.n >= 0
     }
 }
 
 spec fn valid_in(l: Dll, i: int) -> bool {
+    &&& l.well_formed()
     &&& 0 <= i < l.n
     &&& 0 <= l.prev[i] < l.n
     &&& 0 <= l.next[i] < l.n
@@ -33,7 +34,7 @@ spec fn valid_out(l: Dll, i: int) -> bool {
     &&& l.prev[l.next[i] as int] == l.prev[i]
 }
 
-spec fn is_list(l: Dll, s: Seq<int>) -> bool {
+pub open spec fn is_list(l: Dll, s: Seq<int>) -> bool {
     forall|k: int|
         #![trigger s[k]]
         #![trigger l.prev[s[k]]]
