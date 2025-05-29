@@ -107,7 +107,7 @@ spec fn sum(a: MatrixView, b: MatrixView, i: int, j: int, k: nat) -> int
     }
 }
 
-///
+
 // Challenge 1
 #[allow(unused)]
 // Without this, the invariants would be extremely tedious to write.
