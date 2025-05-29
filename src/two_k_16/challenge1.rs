@@ -2,8 +2,8 @@ use vstd::prelude::*;
 
 verus! {
 
-// You can always swap &Vec<Vec<i32>> with &[&[i32]] in function args; I just use Vec<i32>
-// to make it simpler.
+// You can always swap and prove with &[&[i32] instead of &Vec<Vec<i32>>
+// in function args; I just use Vec<i32> to make it simpler.
 type Matrix = Vec<Vec<i32>>;
 
 #[allow(unused)]  // because ghost type
@@ -36,7 +36,7 @@ fn safe_set_2d(v: &mut Matrix, i: usize, j: usize, value: i32)
         // all other indices remain the same
         forall|ri: int, rj: int|
             #![trigger mv(v)[ri][rj]]
-        // (for all valid indices) && (<apart from the current index>) ==> (index does not change)
+            // (for all valid indices) && (<apart from the current index>) ==> (index does not change)
             0 <= ri < v.len() && 0 <= rj < mv(v)[ri].len() && !(ri == i && rj == j) ==> mv(
                 v,
             )[ri][rj] == mv(old(v))[ri][rj],
@@ -107,6 +107,7 @@ spec fn sum(a: MatrixView, b: MatrixView, i: int, j: int, k: nat) -> int
     }
 }
 
+///
 // Challenge 1
 #[allow(unused)]
 // Without this, the invariants would be extremely tedious to write.
@@ -119,7 +120,15 @@ fn matrix_multiply(a: &Matrix, b: &Matrix) -> (c: Matrix)
         // Size limits - otherwise multiplication can overflow
         mv(a).len() <= i32::MAX,
         // Size limits - any possible multiplication won't overflow
-        forall|i: int, k: int, j: int| #![trigger a[i][k], b[k][j]] 0 <= i < mv(a).len() && 0 <= k < mv(a).len() && 0 <= j < mv(b).len() ==> i32::MIN < mv(a)[i][k] * mv(b)[k][j] < i32::MAX,
+        forall|i: int, k: int, j: int|
+            #![trigger a[i][k], b[k][j]]
+            0 <= i < mv(a).len() && 0 <= k < mv(a).len() && 0 <= j < mv(b).len() ==> i32::MIN < mv(
+                a,
+            )[i][k] * mv(b)[k][j] < i32::MAX,
+        // Size limits - any possible sum won't overflow
+        forall|i: int, j: int, k: nat|
+            0 <= i < mv(a).len() && 0 <= j < mv(b).len() && 0 <= k <= mv(a).len() ==> i32::MIN
+                < #[trigger] sum(mv(a), mv(b), i, j, k) < i32::MAX,
     ensures
         valid_matrix(mv(&c)),
         mv(a).len() == mv(b).len() == mv(&c).len(),
@@ -203,7 +212,7 @@ fn matrix_multiply(a: &Matrix, b: &Matrix) -> (c: Matrix)
                 assert(j < mv(&result)[i as int].len());
 
                 // Again, could be removed with trigger improvements?
-                assert(a[i as int].len() == b[k as int].len() == a.len() ) by {
+                assert(a[i as int].len() == b[k as int].len() == a.len()) by {
                     assert(mv(&a)[i as int].len() == mv(a).len());
                     assert(mv(&b)[k as int].len() == mv(b).len());
                 };
@@ -211,8 +220,15 @@ fn matrix_multiply(a: &Matrix, b: &Matrix) -> (c: Matrix)
                 let product = a[i][k] * b[k][j];
                 let current_value = result[i][j];
 
-                assume(i32::MIN < current_value + product < i32::MAX);
-
+                // This assertion is here to prevent overflow again, to help prove the
+                // addition does not overflow
+                assert(current_value + product == sum(
+                    mv(a),
+                    mv(b),
+                    i as int,
+                    j as int,
+                    (k + 1) as nat,
+                ));
                 safe_set_2d(&mut result, i, j, current_value + product);
             }
         }
