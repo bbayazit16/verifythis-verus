@@ -202,8 +202,11 @@ fn matrix_multiply(a: &Matrix, b: &Matrix) -> (c: Matrix)
                 // Removing this causes safe_set_2d prerequisites to be violated.
                 assert(j < mv(&result)[i as int].len());
 
-                assume(a[i as int].len() == a.len());
-                assume(b[k as int].len() == b.len());
+                // Again, could be removed with trigger improvements?
+                assert(a[i as int].len() == b[k as int].len() == a.len() ) by {
+                    assert(mv(&a)[i as int].len() == mv(a).len());
+                    assert(mv(&b)[k as int].len() == mv(b).len());
+                };
 
                 let product = a[i][k] * b[k][j];
                 let current_value = result[i][j];
