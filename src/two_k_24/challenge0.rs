@@ -2,8 +2,6 @@ use vstd::prelude::*;
 
 verus! {
 
-broadcast use vstd::seq_lib::group_seq_properties;
-
 // Represents strings as a vector of bytes. If no string => empty vector.
 pub struct Rope {
     pub left: Option<Box<Rope>>,
