@@ -10,7 +10,7 @@
 - [ ] Challenge 2+3
 
 ### 2023
-- [ ] Challenge 1
+- [x] Challenge 1
 - [ ] Challenge 2
 - [ ] Challenge 3
 
