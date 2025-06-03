@@ -33,7 +33,7 @@ spec fn box_ptr(c: Option<Cell>) -> Option<Box<Cell>> {
 
 /// Use with reversed(None, <list>), the first argument is the accumulator.
 /// You could also abstract this as helper function, but it's quite enough for the proof.
-spec fn reversed(cell: Option<Cell>, remaining: Option<Cell>) -> Option<Cell>
+spec fn reversed(cell: Option<Cell>, remaining: Option<Box<Cell>>) -> Option<Cell>
     decreases remaining,
 {
     match remaining {
@@ -43,7 +43,7 @@ spec fn reversed(cell: Option<Cell>, remaining: Option<Cell>) -> Option<Cell>
             let next_ptr = rest.next;
 
             let new_rest = Some(Cell { value: head_val, next: box_ptr(cell) });
-            reversed(new_rest, unbox_ptr(next_ptr))
+            reversed(new_rest, next_ptr)
         },
     }
 }
@@ -58,22 +58,21 @@ fn list_reversal_helper(
         // This block would be parsed as the function/loop body, but it is followed immediately by another block
         // (if you meant this block to be part of the specification, try parenthesizing it)
         // Added block - in case let statements are required;
-        ({ reversed(None, unbox_ptr(original_head)) =~= unbox_ptr(new_ptr) }),
+        ({ reversed(None, original_head) =~= unbox_ptr(new_ptr) }),
 {
     let mut prev: Option<Box<Cell>> = None;
 
     while head.is_some()
         invariant
-            reversed(unbox_ptr(prev), unbox_ptr(head)) =~= reversed(
+            reversed(unbox_ptr(prev), head) =~= reversed(
                 None,
-                unbox_ptr(original_head),
+                original_head,
             ),
-        
-    // Technically, we could just do `decreases head`.
-    // However, there's a bug (either this, or something similar) with Verus that
-    // prevents us from doing so:
-    // https://github.com/verus-lang/verus/issues/1222
-    // Verus panic when checking termination on a Seq of recursive enums
+        // Technically, we could just do `decreases head`.
+        // However, there's a bug (either this, or something similar) with Verus that
+        // prevents us from doing so:
+        // https://github.com/verus-lang/verus/issues/1222
+        // Verus panic when checking termination on a Seq of recursive enums
         decreases cell_len(unbox_ptr(head)),
     {
         let mut current = head.unwrap();
@@ -83,12 +82,10 @@ fn list_reversal_helper(
     }
 
     // These assertions are not needed - but good to use when debugging
-    // assert(reversed(unbox_ptr(prev),
-    //                  unbox_ptr(head))
-    //           =~= reversed(None, unbox_ptr(original_head)));
+    // assert(reversed(unbox_ptr(prev), head) =~= reversed(None, original_head));
     // assert(head.is_none());
     // assert(reversed(unbox_ptr(prev), None) =~= unbox_ptr(prev));
-    // assert(unbox_ptr(prev) =~= reversed(None, unbox_ptr(original_head)));
+    // assert(unbox_ptr(prev) =~= reversed(None, original_head));
 
     prev
 }
@@ -97,7 +94,7 @@ fn list_reversal_helper(
 #[allow(unused)]
 fn list_reversal(head: Option<Box<Cell>>) -> (new_ptr: Option<Box<Cell>>)
     ensures
-        reversed(None, unbox_ptr(head)) =~= unbox_ptr(new_ptr),
+        reversed(None, head) =~= unbox_ptr(new_ptr),
 {
     list_reversal_helper(head, Ghost(head))
 }
