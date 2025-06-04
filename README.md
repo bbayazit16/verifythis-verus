@@ -11,7 +11,7 @@
 
 ### 2023
 - [x] Challenge 1
-- [ ] Challenge 2
+- [x] Challenge 2 (Tasks 1, 2, 3)
 - [ ] Challenge 3
 
 ### 2022
