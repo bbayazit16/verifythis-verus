@@ -15,7 +15,7 @@
 - [ ] Challenge 3
 
 ### 2022
-- [ ] Challenge 1
+- [x] Challenge 1 (Tasks 1, 2)
 - [ ] Challenge 2
 - [ ] Challenge 3
 
