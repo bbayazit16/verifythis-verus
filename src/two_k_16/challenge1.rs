@@ -21,9 +21,9 @@ spec fn mv(m: &Matrix) -> MatrixView {
 #[verifier::external_body]
 fn safe_set_2d(v: &mut Matrix, i: usize, j: usize, value: i32)
     requires
-        // i is valid index
+        // i is a valid index
         i < old(v).len(),
-        // j is valid index
+        // j is a valid index
         j < old(v)[i as int].len(),
         valid_matrix(mv(old(v))),
     ensures
