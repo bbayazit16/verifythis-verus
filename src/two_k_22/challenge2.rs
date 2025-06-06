@@ -3,7 +3,7 @@ use vstd::prelude::*;
 verus! {
 
 // Initially I added generics and did T: PartialOrd to make the
-// algorithm generally applicable. But, on comparison, we get
+// algorithm generally applicable. But, on element comparison, we get
 // the error:
 //
 // The verifier does not yet support the following Rust
