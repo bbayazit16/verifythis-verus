@@ -21,7 +21,7 @@
 
 ### 2021
 - [x] Challenge 1 (Tasks 1, 4, 6, partial 2, 5)
-- [] Challenge 2
+- [ ] Challenge 2
 - [x] Challenge 3 (Tasks 1, 2, 3)
 
 ### 2019
