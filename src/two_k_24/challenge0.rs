@@ -268,12 +268,12 @@ impl Rope {
             for i in 0..self.value.len()
                 invariant
                     self.well_formed(),
-                    string@ == old_string + self.value@.subrange(0, i as int),
+                    string@ =~= old_string + self.value@.subrange(0, i as int),
             {
                 string.push(self.value[i]);
-                assert(string@ == old_string + self.value@.subrange(0, (i + 1) as int));
+                assert(string@ =~= old_string + self.value@.subrange(0, (i + 1) as int));
             }
-            assert(self.value@.subrange(0, self.value.len() as int) == self.value@);
+            assert(self.value@.subrange(0, self.value.len() as int) =~= self.value@);
         } else {
             if let Some(left) = &self.left {
                 left.to_str_recurse(string);
