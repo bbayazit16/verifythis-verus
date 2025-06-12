@@ -20,12 +20,12 @@
 - [ ] Challenge 3
 
 ### 2021
-- [x] Challenge 1 (Tasks 1, 4, 6, partial 2, 5)
+- [x] Challenge 1 (Tasks 1, 4, 6, partial: 2, 5)
 - [ ] Challenge 2
 - [x] Challenge 3 (Tasks 1, 2, 3)
 
 ### 2019
-- [ ] Challenge 1
+- [x] Challenge 1 (Part A)
 - [ ] Challenge 2
 - [ ] Challenge 3
 
