@@ -31,7 +31,7 @@
 
 ### 2018
 - [ ] Challenge 1
-- [ ] Challenge 2
+- [x] Challenge 2 (assuming no Rust overflows occur)
 - [ ] Challenge 3
 - [ ] Challenge 4
 
