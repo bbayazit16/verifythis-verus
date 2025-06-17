@@ -273,6 +273,7 @@ fn count_sequences(i: usize) -> u64
                     0 <= y < j ==> !((Seq::empty().push(false) + v(res[n - 1])[y]) =~= (
                     Seq::empty().push(false) + v(res[n - 1])[j as int])));
 
+                // https://github.com/verus-lang/verusfmt/issues/145
                 assert(forall|y: int| #![trigger last[y]] 0 <= y < last.len() ==> {
                     &&& v(last)[y] !~= Seq::empty().push(false) + vv(res)[n - 1][j as int]
                 }) by {
